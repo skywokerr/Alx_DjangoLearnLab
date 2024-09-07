@@ -1,0 +1,17 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    {% comment %} <link rel="stylesheet" href="{% static 'css/styles.css' %}"> {% endcomment %}
+</head>
+<body>
+    <h1>Home page</h1>
+    <form method="post" action="{% url 'relationship_app:login' %}">
+        {% csrf_token %}
+        <button type="submit">Login</button>
+    </form>
+  
+</body>
+</html>
