@@ -1,18 +1,14 @@
 from django.contrib import admin
-from .models import Book, Author,Librarian,Library
-# Register your models here.
-@admin.register(Book)
-class BookAdmin(admin.ModelAdmin):
-    list_display = ('title', )
-    
-@admin.register(Author)
-class AuthorAdmin(admin.ModelAdmin):
-    list_display = ('name', )
+from django.contrib.auth.admin import UserAdmin
+from .models import CustomUser
 
-@admin.register(Librarian)
-class LibrarianAdmin(admin.ModelAdmin):
-    list_display = ('name', )
+class CustomUserAdmin(UserAdmin):
+    model = CustomUser
+    fieldsets = UserAdmin.fieldsets + (
+        (None, {'fields': ('date_of_birth', 'profile_photo')}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (None, {'fields': ('date_of_birth', 'profile_photo')}),
+    )
 
-@admin.register(Library)
-class LibraryAdmin(admin.ModelAdmin):
-    list_display = ('name', )
+admin.site.register(CustomUser, CustomUserAdmin)

@@ -1,37 +1,43 @@
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
-from django.contrib.auth.models import User
-# Create your models here.
-class Author(models.Model):
-    name = models.CharField(max_length=100, null=False)
-    def __str__(self):
-        return self.name
 
-class Book(models.Model):
-    title = models.CharField(max_length=100, null=False)
-    author = models.ForeignKey(Author,on_delete=models.CASCADE, related_name='books')
-    def __str__(self):
-        return self.title
-    class Meta:
-        permissions = [("can_add_book", "Can_add_book"),("can_change_book", "Can_change_book"),("can_delete_book", "Can_delete_book")]
+class CustomUser(AbstractUser):
+    date_of_birth = models.DateField(null=True, blank=True)
+    profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
 
-class Library(models.Model):
-    name = models.CharField(max_length=100, null=False)
-    books = models.ManyToManyField(Book, related_name='library')
-    def __str__(self):
-        return self.name
+    objects = BaseUserManager()
 
-class Librarian(models.Model):
-    name = models.CharField(max_length=100, null=False)
-    library = models.OneToOneField(Library,on_delete=models.CASCADE)
     def __str__(self):
-        return self.name
-ROLE_CHOICES = [
-    ('Admin', 'Admin'),
-    ('Librarian', 'Librarian'),
-    ('Member', 'Member'),
-]
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=15,choices=ROLE_CHOICES, default='Member')
+        return self.username
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self, username, email, date_of_birth=None, profile_photo=None, password=None):
+        if not email:
+            raise ValueError('Users must have an email address')
+        email = self.normalize_email(email)
+        user = self.model(username=username, email=email, date_of_birth=date_of_birth, profile_photo=profile_photo)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, email, date_of_birth=None, profile_photo=None, password=None):
+        user = self.create_user(username=username, email=email, date_of_birth=date_of_birth, profile_photo=profile_photo, password=password)
+        user.is_admin = True
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
+        return user
+
+class CustomUser(AbstractUser):
+    date_of_birth = models.DateField(null=True, blank=True)
+    profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
+
+    objects = CustomUserManager()
+
     def __str__(self):
-        return f'{self.user.username} - {self.role}'
+        return self.username
+
+from django.conf import settings
+
+class ExampleModel(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
