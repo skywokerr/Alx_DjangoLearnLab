@@ -6,11 +6,11 @@ from django.utils import timezone
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password,date_of_birth,profile_photo):
         if not email:
-            raise ValueError("You must have an email")
+            raise ValueError("You need to have an email")
         if not date_of_birth:
-            raise ValueError("You must provide a birth date")
+            raise ValueError("You  need to provide a birth date")
         if not profile_photo:
-            raise ValueError("You must provide a profile pic")
+            raise ValueError("You need to provide a profile pic")
         user = self.model(email=self.normalize_email(email),date_of_birth=date_of_birth,profile_photo=profile_photo)
         user.set_password(password)
         user.save(using=self._db)
