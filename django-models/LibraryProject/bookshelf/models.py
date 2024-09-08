@@ -24,7 +24,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     class Meta:
         db_table = 'auth_user'
-    email = models.EmailField(max_length=155, unique=True)
+    email = models.EmailField(max_length=100, unique=True)
     username = models.CharField(max_length=100, unique=False)
     date_of_birth = models.DateField(blank=True, default=timezone.now)
     profile_photo = models.ImageField(blank=True)
