@@ -1,0 +1,30 @@
+{% extends "./base.html" %}
+{% block content %}
+<h2>{{user.username}} Profile</h2>
+<form method="POST">
+    {% csrf_token %}
+    <fieldset>
+        <legend>Personal Data</legend>
+        {{ user_update_form.as_p }}
+    </fieldset>
+    <fieldset>
+        <legend>Profile Information</legend>
+        {{ profile_update_form.as_p }}
+    </fieldset>
+    <button type="submit">Change Profile</button>
+</form>
+
+<!-- Displays user's profile information -->
+<h3>{{ request.user.username }}</h3>
+<p>First Name: {{ request.user.first_name }}</p>
+<p>Last Name: {{ request.user.last_name }}</p>
+<p>Email: {{ request.user.email }}</p>
+<p>Bio: {{ request.user.profile.bio }}</p>
+<img src="{{ request.user.userprofile.image_url }}" alt="User Pic" width="180">
+
+<h2>Logout</h2>
+<form action="{% url 'logout' %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form>
+{% endblock  %}

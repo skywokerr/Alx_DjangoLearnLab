@@ -1,0 +1,25 @@
+{% extends "./base.html" %}
+{% block title %}Create Comment{% endblock  %}
+
+{% block content %}
+<h1>Create New Comment</h1>
+{% if user.is_authenticated %}
+<form action="{% url 'comment_form' pk=post.pk %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Comment</button>
+</form>
+    <a href="{% url 'home' %}">Back to Home</a>
+    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+    {% else %}
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+    {% endif %}
+{% endblock  %}

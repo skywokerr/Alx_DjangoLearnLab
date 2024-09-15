@@ -1,0 +1,33 @@
+{% extends "./base.html" %}
+{% block title %}
+Posts tagged with "{{ tags.name }}"
+{% endblock %}
+
+{% block content %}
+
+<h1>Posts tagged with "{{ tag.name }}"</h1>
+
+{% if posts %}
+    <ul>
+        {% for post in posts %}
+            <li>
+                <h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
+                <p><strong>Author:</strong> {{ post.author.first_name }} {{ post.author.last_name }}</p>
+                <p>{{ post.content|slice:":200" }}...</p>
+                <p><strong>Published on:</strong> {{ post.published_date }}</p>
+                
+                {% if user.is_authenticated and user == post.author %}
+                <p>
+                    <a href="{% url 'edit_post' post.pk %}">Edit</a> | 
+                    <a href="{% url 'post_confirm_delete' post.pk %}">Delete</a> | 
+                    <a href="{% url 'post_detail' post.pk %}">See Details</a>
+                </p>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No posts available with the tag "{{ tags.name }}".</p>
+{% endif %}
+
+{% endblock %}

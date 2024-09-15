@@ -1,0 +1,50 @@
+{% extends "./base.html" %}
+{% block title %}
+Post List
+{% endblock %}
+{% block content %}
+<!-- Search Form -->
+<form method="get" action="{% url 'post_list' %}">
+
+    <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search posts...">
+    <button type="submit">Search</button>
+</form>
+
+total search results: {{total}}
+<h1>Blog Posts</h1>
+    {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }}!</p>
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+        <a href="{% url 'post_form' %}">Create New Post</a>
+    {% else %}
+        <p><a href="{% url 'login' %}">Login</a> or <a href="{% url 'register' %}">Register</a></p>
+    {% endif %}
+    <h2>Common Tags</h2>
+<ul>
+    {% for tag in common_tags %}
+        <li>
+            <a href="{% url 'tagged' slug=tag.slug %}">{{ tag.name }}</a> ({{ tag.num_posts }} posts)
+        </li>
+    {% endfor %}
+</ul>
+    <ul>
+        {% for post in object_list %}
+            <li>
+                <h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
+                
+                <p><strong>Author </strong> : {{ post.author.first_name }}</p>
+                <p>{{ post.content|slice:":200" }}...</p>
+                <p>{{ post.published_date }}</p>
+               
+                {% if user.is_authenticated and user == post.author %}
+                <p><a href="{% url 'edit_post' post.pk %}">Edit</a> | <a href="{% url 'post_confirm_delete' post.pk %}">Delete</a> | <a href="{% url 'post_detail' post.pk %}">See Details</a></p>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>No posts available.</li>
+        {% endfor %}
+    </ul>
+{% endblock  %}
