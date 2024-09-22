@@ -1,0 +1,6 @@
+Django
+django-extensions
+django-filter
+django-taggit
+djangorestframework
+python-dotenv
